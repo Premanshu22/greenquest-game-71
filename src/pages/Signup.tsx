@@ -23,10 +23,27 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await signUp(formData.email, formData.password, formData.name, formData.role);
+    const result = await signUp(formData.email, formData.password, formData.name, formData.role);
     
-    if (!error) {
-      navigate("/login");
+    if (!result.error) {
+      if (result.needsConfirmation) {
+        navigate("/login");
+      } else if (result.role) {
+        // Redirect based on role after successful signup and auto sign-in
+        switch (result.role) {
+          case 'student':
+            navigate('/profile');
+            break;
+          case 'teacher':
+            navigate('/teacher');
+            break;
+          case 'admin':
+            navigate('/admin');
+            break;
+          default:
+            navigate('/profile');
+        }
+      }
     }
     
     setLoading(false);

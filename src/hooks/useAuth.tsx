@@ -16,7 +16,7 @@ interface AuthContextType {
   session: Session | null;
   userProfile: UserProfile | null;
   loading: boolean;
-  signUp: (email: string, password: string, name: string, role: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, name: string, role: string) => Promise<{ error: any; needsConfirmation?: boolean; role?: string }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
@@ -110,7 +110,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl
+          emailRedirectTo: redirectUrl,
+          data: {
+            name,
+            role
+          }
         }
       });
 
@@ -123,7 +127,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error };
       }
 
-      if (data.user) {
+      // Check if user needs email confirmation
+      if (data.user && !data.session) {
+        toast({
+          title: "Check your email",
+          description: "Please check your email to confirm your account before signing in.",
+        });
+        return { error: null, needsConfirmation: true };
+      }
+
+      // If user is immediately signed in (email confirmation disabled)
+      if (data.user && data.session) {
+        // Wait a moment for auth state to update
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         // Insert user profile into users table
         const { error: profileError } = await supabase
           .from('users')
@@ -146,8 +163,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         toast({
           title: "Account Created",
-          description: "Your account has been created successfully!",
+          description: "Welcome! Your account has been created successfully!",
         });
+
+        return { error: null, role };
       }
 
       return { error: null };
