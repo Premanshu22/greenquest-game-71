@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, User, Trophy, BookOpen, GraduationCap, Leaf, Shield, MoreVertical } from "lucide-react";
+import { Home, User, Trophy, BookOpen, GraduationCap, Leaf, Shield, MoreVertical, ChevronDown, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -47,6 +47,24 @@ export const Navigation = () => {
                 {item.name}
               </NavLink>
             ))}
+            
+            {/* Extra Features Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 text-foreground hover:bg-accent hover:text-accent-foreground">
+                  Extra Features
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <NavLink to="/eco-missions" className="flex items-center gap-2 w-full">
+                    <Target className="h-4 w-4 text-success" />
+                    Eco-Missions
+                  </NavLink>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile Menu */}
@@ -69,6 +87,13 @@ export const Navigation = () => {
                     </NavLink>
                   </DropdownMenuItem>
                 ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <NavLink to="/eco-missions" className="flex items-center gap-2 w-full">
+                    <Target className="h-4 w-4 text-success" />
+                    Eco-Missions
+                  </NavLink>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

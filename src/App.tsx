@@ -10,6 +10,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Quiz from "./pages/Quiz";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import EcoMissions from "./pages/EcoMissions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const AppContent = () => {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/teacher" element={<TeacherDashboard />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/eco-missions" element={<EcoMissions />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
