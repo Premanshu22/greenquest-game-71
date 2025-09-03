@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { Home, User, Trophy, BookOpen, GraduationCap, Leaf, LogOut, Shield, MoreVertical } from "lucide-react";
+import { Home, User, Trophy, BookOpen, GraduationCap, Leaf, Shield, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -11,30 +10,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const Navigation = () => {
-  const { userProfile, signOut } = useAuth();
-
-  const getNavItems = () => {
-    const baseItems = [
-      { name: "Profile", path: "/profile", icon: User },
-      { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
-      { name: "Quiz", path: "/quiz", icon: BookOpen },
-    ];
-
-    if (userProfile?.role === 'teacher') {
-      baseItems.push({ name: "Teacher", path: "/teacher", icon: GraduationCap });
-    }
-    
-    if (userProfile?.role === 'admin') {
-      baseItems.push(
-        { name: "Teacher", path: "/teacher", icon: GraduationCap },
-        { name: "Admin", path: "/admin", icon: Shield }
-      );
-    }
-
-    return baseItems;
-  };
-
-  const navItems = getNavItems();
+  const navItems = [
+    { name: "Home", path: "/", icon: Home },
+    { name: "Profile", path: "/profile", icon: User },
+    { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
+    { name: "Quiz", path: "/quiz", icon: BookOpen },
+    { name: "Teacher", path: "/teacher", icon: GraduationCap },
+    { name: "Admin", path: "/admin", icon: Shield }
+  ];
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border/50">
@@ -66,52 +49,30 @@ export const Navigation = () => {
             ))}
           </div>
 
-          {/* User Profile & Mobile Menu */}
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-3">
-              <span className="text-sm text-muted-foreground">
-                {userProfile?.name} ({userProfile?.role})
-              </span>
-              <Button variant="ghost" onClick={signOut} className="text-muted-foreground hover:text-foreground">
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {/* Mobile Menu */}
-            <div className="md:hidden">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <MoreVertical className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                    {userProfile?.name} ({userProfile?.role})
-                  </div>
-                  <DropdownMenuSeparator />
-                  {navItems.map((item) => (
-                    <DropdownMenuItem key={item.path} asChild>
-                      <NavLink
-                        to={item.path}
-                        className="flex items-center gap-2 w-full"
-                      >
-                        <item.icon className="h-4 w-4" />
-                        {item.name}
-                      </NavLink>
-                    </DropdownMenuItem>
-                  ))}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="text-red-600">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
+          {/* Mobile Menu */}
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreVertical className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {navItems.map((item) => (
+                  <DropdownMenuItem key={item.path} asChild>
+                    <NavLink
+                      to={item.path}
+                      className="flex items-center gap-2 w-full"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {item.name}
+                    </NavLink>
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
-
       </div>
     </nav>
   );
