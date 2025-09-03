@@ -138,34 +138,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // If user is immediately signed in (email confirmation disabled)
       if (data.user && data.session) {
-        // Wait a moment for auth state to update
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Insert user profile into users table
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: data.user.id,
-            email,
-            name,
-            role
-          });
-
-        if (profileError) {
-          console.error('Error creating user profile:', profileError);
-          toast({
-            title: "Profile Creation Error",
-            description: profileError.message,
-            variant: "destructive",
-          });
-          return { error: profileError };
-        }
-
         toast({
           title: "Account Created",
           description: "Welcome! Your account has been created successfully!",
         });
-
         return { error: null, role };
       }
 
