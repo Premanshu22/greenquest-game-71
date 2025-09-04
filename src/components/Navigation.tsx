@@ -75,6 +75,12 @@ export const Navigation = () => {
                     Community Forum
                   </NavLink>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink to="/impact-tracker" className="flex items-center gap-2 w-full">
+                    <Trophy className="h-4 w-4 text-emerald-600" />
+                    Impact Tracker
+                  </NavLink>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -116,6 +122,12 @@ export const Navigation = () => {
                   <NavLink to="/forum" className="flex items-center gap-2 w-full">
                     <MessageSquare className="h-4 w-4 text-blue-600" />
                     Community Forum
+                  </NavLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink to="/impact-tracker" className="flex items-center gap-2 w-full">
+                    <Trophy className="h-4 w-4 text-emerald-600" />
+                    Impact Tracker
                   </NavLink>
                 </DropdownMenuItem>
               </DropdownMenuContent>

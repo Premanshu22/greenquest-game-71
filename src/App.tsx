@@ -13,6 +13,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import EcoMissions from "./pages/EcoMissions";
 import EcoShop from "./pages/EcoShop";
 import Forum from "./pages/Forum";
+import ImpactTracker from "./pages/ImpactTracker";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const AppContent = () => {
         <Route path="/eco-missions" element={<EcoMissions />} />
         <Route path="/eco-shop" element={<EcoShop />} />
         <Route path="/forum" element={<Forum />} />
+        <Route path="/impact-tracker" element={<ImpactTracker />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
