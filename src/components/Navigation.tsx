@@ -63,6 +63,12 @@ export const Navigation = () => {
                     Eco-Missions
                   </NavLink>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink to="/eco-shop" className="flex items-center gap-2 w-full">
+                    <Leaf className="h-4 w-4 text-primary" />
+                    Eco-Shop
+                  </NavLink>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -92,6 +98,12 @@ export const Navigation = () => {
                   <NavLink to="/eco-missions" className="flex items-center gap-2 w-full">
                     <Target className="h-4 w-4 text-success" />
                     Eco-Missions
+                  </NavLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink to="/eco-shop" className="flex items-center gap-2 w-full">
+                    <Leaf className="h-4 w-4 text-primary" />
+                    Eco-Shop
                   </NavLink>
                 </DropdownMenuItem>
               </DropdownMenuContent>
