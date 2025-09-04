@@ -12,6 +12,7 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import EcoMissions from "./pages/EcoMissions";
 import EcoShop from "./pages/EcoShop";
+import Forum from "./pages/Forum";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const AppContent = () => {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/eco-missions" element={<EcoMissions />} />
         <Route path="/eco-shop" element={<EcoShop />} />
+        <Route path="/forum" element={<Forum />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

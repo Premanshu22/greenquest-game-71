@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, User, Trophy, BookOpen, GraduationCap, Leaf, Shield, MoreVertical, ChevronDown, Target } from "lucide-react";
+import { Home, User, Trophy, BookOpen, GraduationCap, Leaf, Shield, MoreVertical, ChevronDown, Target, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -69,6 +69,12 @@ export const Navigation = () => {
                     Eco-Shop
                   </NavLink>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink to="/forum" className="flex items-center gap-2 w-full">
+                    <MessageSquare className="h-4 w-4 text-blue-600" />
+                    Community Forum
+                  </NavLink>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -104,6 +110,12 @@ export const Navigation = () => {
                   <NavLink to="/eco-shop" className="flex items-center gap-2 w-full">
                     <Leaf className="h-4 w-4 text-primary" />
                     Eco-Shop
+                  </NavLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink to="/forum" className="flex items-center gap-2 w-full">
+                    <MessageSquare className="h-4 w-4 text-blue-600" />
+                    Community Forum
                   </NavLink>
                 </DropdownMenuItem>
               </DropdownMenuContent>
