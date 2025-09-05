@@ -188,56 +188,113 @@ const Leaderboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-6">
-                  {topStudents.map((student, index) => (
-                    <div 
-                      key={student.rank} 
-                      className={`relative ${getRankColor(student.rank)} rounded-2xl p-6 text-white text-center animate-slide-up hover:scale-105 transition-all duration-300`}
-                      style={{ animationDelay: `${index * 0.2}s` }}
-                    >
-                      {/* Rank Badge */}
-                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
-                          {getRankIcon(student.rank)}
-                        </div>
+                <div className="flex flex-col md:flex-row gap-6 items-center justify-center">
+                  {/* First Place - Larger Card */}
+                  <div 
+                    key={topStudents[0].rank} 
+                    className={`relative ${getRankColor(topStudents[0].rank)} rounded-2xl p-8 text-white text-center animate-slide-up hover:scale-105 transition-all duration-300 md:w-80 w-full md:h-96 shadow-2xl`}
+                    style={{ animationDelay: `0s` }}
+                  >
+                    {/* Rank Badge - Larger for first place */}
+                    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl">
+                        <Crown className="h-8 w-8 text-yellow-500" />
                       </div>
-
-                      {/* Avatar */}
-                      <div className="mt-4 mb-4">
-                        <Avatar className="w-16 h-16 mx-auto border-4 border-white shadow-lg">
-                          <AvatarFallback className="bg-white text-primary font-bold text-lg">
-                            {student.avatar}
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-
-                      {/* Student Info */}
-                      <h3 className="font-bold text-lg mb-1">{student.name}</h3>
-                      <p className="text-white/80 text-sm mb-3">{student.school}</p>
-                      
-                      {/* Stats */}
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-white/80">Points:</span>
-                          <span className="font-bold">{student.points.toLocaleString()}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-white/80">Level:</span>
-                          <span className="font-bold">{student.level}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-white/80">Badges:</span>
-                          <span className="font-bold">{student.badges}</span>
-                        </div>
-                      </div>
-
-                      {/* Improvement Badge */}
-                      <Badge className="mt-3 bg-white/20 text-white border-white/30">
-                        <TrendingUp className="h-3 w-3 mr-1" />
-                        {student.improvement}
-                      </Badge>
                     </div>
-                  ))}
+
+                    {/* Avatar - Larger for first place */}
+                    <div className="mt-6 mb-6">
+                      <Avatar className="w-20 h-20 mx-auto border-4 border-white shadow-lg">
+                        <AvatarFallback className="bg-white text-primary font-bold text-xl">
+                          {topStudents[0].avatar}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+
+                    {/* Student Info */}
+                    <h3 className="font-bold text-xl mb-2">{topStudents[0].name}</h3>
+                    <p className="text-white/80 text-base mb-4">{topStudents[0].school}</p>
+                    
+                    {/* Champion Badge */}
+                    <Badge className="mb-4 bg-white/20 text-white border-white/30 text-sm px-3 py-1">
+                      🏆 CHAMPION
+                    </Badge>
+                    
+                    {/* Stats - More detailed for first place */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-white/80">Points:</span>
+                        <span className="font-bold text-lg">{topStudents[0].points.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-white/80">Level:</span>
+                        <span className="font-bold text-lg">{topStudents[0].level}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-white/80">Badges:</span>
+                        <span className="font-bold text-lg">{topStudents[0].badges}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-white/80">Streak:</span>
+                        <span className="font-bold text-lg">{topStudents[0].streak} days</span>
+                      </div>
+                    </div>
+
+                    {/* Improvement Badge */}
+                    <Badge className="mt-4 bg-white/20 text-white border-white/30">
+                      <TrendingUp className="h-4 w-4 mr-1" />
+                      {topStudents[0].improvement}
+                    </Badge>
+                  </div>
+
+                  {/* Second and Third Place - Smaller Cards */}
+                  <div className="flex flex-col gap-6 md:w-64">
+                    {topStudents.slice(1).map((student, index) => (
+                      <div 
+                        key={student.rank} 
+                        className={`relative ${getRankColor(student.rank)} rounded-2xl p-6 text-white text-center animate-slide-up hover:scale-105 transition-all duration-300 md:h-44`}
+                        style={{ animationDelay: `${(index + 1) * 0.2}s` }}
+                      >
+                        {/* Rank Badge */}
+                        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+                            {getRankIcon(student.rank)}
+                          </div>
+                        </div>
+
+                        {/* Avatar */}
+                        <div className="mt-4 mb-3">
+                          <Avatar className="w-12 h-12 mx-auto border-4 border-white shadow-lg">
+                            <AvatarFallback className="bg-white text-primary font-bold text-sm">
+                              {student.avatar}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+
+                        {/* Student Info */}
+                        <h3 className="font-bold text-base mb-1">{student.name}</h3>
+                        <p className="text-white/80 text-xs mb-2">{student.school}</p>
+                        
+                        {/* Stats - Compact */}
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-white/80">Points:</span>
+                            <span className="font-bold">{student.points.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-white/80">Level:</span>
+                            <span className="font-bold">{student.level}</span>
+                          </div>
+                        </div>
+
+                        {/* Improvement Badge */}
+                        <Badge className="mt-2 bg-white/20 text-white border-white/30 text-xs">
+                          <TrendingUp className="h-3 w-3 mr-1" />
+                          {student.improvement}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </CardContent>
             </Card>
