@@ -2,6 +2,8 @@
 export interface User {
   id: string;
   name: string;
+  displayName?: string;
+  bio?: string;
   role: 'student' | 'teacher' | 'admin';
   avatar: string;
   level: number;
@@ -12,6 +14,7 @@ export interface User {
   badges: string[];
   courses: string[];
   classId?: string;
+  theme?: 'light' | 'dark' | 'auto';
 }
 
 export interface Mission {
@@ -94,8 +97,10 @@ export const mockUsers: User[] = [
   {
     id: 'student1',
     name: 'Alex Chen',
+    displayName: 'EcoWarrior',
+    bio: 'Passionate about sustainable living and renewable energy. Level 12 environmental champion working towards a greener future! 🌱',
     role: 'student',
-    avatar: '/placeholder.svg?height=100&width=100',
+    avatar: '🌱',
     level: 12,
     xp: 2450,
     xpToNextLevel: 550,
@@ -103,33 +108,40 @@ export const mockUsers: User[] = [
     streak: 7,
     badges: ['eco-warrior', 'quiz-master', 'tree-hugger', 'water-saver'],
     courses: ['climate-101', 'recycling-basics', 'biodiversity-fun'],
-    classId: 'class-7a'
+    classId: 'class-7a',
+    theme: 'light'
   },
   {
     id: 'teacher1',
     name: 'Ms. Rodriguez',
+    displayName: 'Prof. Wilson',
+    bio: 'Environmental Science Professor with 15 years of experience in climate research and education. Helping students discover the wonders of our planet.',
     role: 'teacher',
-    avatar: '/placeholder.svg?height=100&width=100',
+    avatar: '👩‍🏫',
     level: 25,
     xp: 8750,
     xpToNextLevel: 1250,
     coins: 3200,
     streak: 15,
     badges: ['educator', 'mentor', 'eco-champion', 'community-builder'],
-    courses: ['all-courses']
+    courses: ['all-courses'],
+    theme: 'auto'
   },
   {
     id: 'admin1',
     name: 'Dr. Green',
+    displayName: 'GreenThumb',
+    bio: 'Sustainability advocate and platform administrator. Leading the global effort to create environmentally conscious digital citizens.',
     role: 'admin',
-    avatar: '/placeholder.svg?height=100&width=100',
+    avatar: '🌿',
     level: 50,
     xp: 25000,
     xpToNextLevel: 5000,
     coins: 10000,
     streak: 30,
     badges: ['system-admin', 'eco-pioneer', 'platform-creator', 'sustainability-guru'],
-    courses: ['all-courses']
+    courses: ['all-courses'],
+    theme: 'dark'
   }
 ];
 
@@ -472,17 +484,50 @@ export const mockQuizzes: Quiz[] = [
   }
 ];
 
-// Helper functions to manage demo state
+// User management functions
+let currentUserId = "student1";
+
+export const getCurrentUser = (): User => {
+  // Try to get user from localStorage first
+  const stored = localStorage.getItem('ecoquest_currentUser');
+  if (stored) {
+    try {
+      const parsedUser = JSON.parse(stored);
+      // Update the mock users array to maintain consistency
+      const userIndex = mockUsers.findIndex(u => u.id === parsedUser.id);
+      if (userIndex !== -1) {
+        mockUsers[userIndex] = parsedUser;
+      }
+      return parsedUser;
+    } catch (error) {
+      console.error('Error parsing stored user:', error);
+    }
+  }
+  return mockUsers.find(user => user.id === currentUserId) || mockUsers[0];
+};
+
+export const updateCurrentUser = (updatedUser: User): void => {
+  // Update in memory
+  const userIndex = mockUsers.findIndex(u => u.id === updatedUser.id);
+  if (userIndex !== -1) {
+    mockUsers[userIndex] = updatedUser;
+  }
+  
+  // Persist to localStorage
+  localStorage.setItem('ecoquest_currentUser', JSON.stringify(updatedUser));
+  currentUserId = updatedUser.id;
+};
+
 export const switchUser = (userId: string): User | null => {
   const user = mockUsers.find(u => u.id === userId);
   if (user) {
-    currentUser = user;
+    currentUserId = userId;
+    // Clear localStorage when switching users in demo mode
+    localStorage.removeItem('ecoquest_currentUser');
     return user;
   }
   return null;
 };
-
-export const getCurrentUser = (): User => currentUser;
 
 export const updateUserCoins = (amount: number): void => {
   currentUser.coins += amount;

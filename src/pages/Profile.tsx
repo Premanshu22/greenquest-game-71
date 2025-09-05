@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,9 +20,11 @@ import {
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
 import { mockBadges, mockQuizzes } from "@/data/mockData";
+import { EditProfileModal } from "@/components/EditProfileModal";
 
 const Profile = () => {
   const { currentUser, isDemoMode } = useDemo();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
   const userBadges = isDemoMode 
     ? mockBadges.filter(badge => currentUser.badges.includes(badge.id))
@@ -62,8 +64,15 @@ const Profile = () => {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-3xl font-bold text-foreground">{currentUser.name}</h1>
-                <p className="text-muted-foreground mb-4">Environmental Champion</p>
+                <h1 className="text-3xl font-bold text-foreground" data-bind="{{current_user.name}}">{currentUser.name}</h1>
+                {currentUser.displayName && (
+                  <p className="text-lg text-primary font-medium" data-bind="{{current_user.displayName}}">"{currentUser.displayName}"</p>
+                )}
+                {currentUser.bio ? (
+                  <p className="text-muted-foreground mb-4 mt-2" data-bind="{{current_user.bio}}">{currentUser.bio}</p>
+                ) : (
+                  <p className="text-muted-foreground mb-4">Environmental Champion</p>
+                )}
                 <div className="flex items-center justify-center md:justify-start gap-4">
                   <div className="flex items-center gap-1 text-primary">
                     <Crown className="h-4 w-4" />
@@ -83,7 +92,11 @@ const Profile = () => {
                     <Coins className="h-5 w-5" />
                     {currentUser.coins} Eco-Coins
                   </div>
-                  <Button className="mt-2" variant="outline">
+                  <Button 
+                    className="mt-2" 
+                    variant="outline"
+                    onClick={() => setIsEditModalOpen(true)}
+                  >
                     <Settings className="h-4 w-4 mr-2" />
                     Edit Profile
                   </Button>
@@ -198,6 +211,12 @@ const Profile = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Edit Profile Modal */}
+        <EditProfileModal 
+          open={isEditModalOpen}
+          onOpenChange={setIsEditModalOpen}
+        />
       </div>
     </div>
   );
