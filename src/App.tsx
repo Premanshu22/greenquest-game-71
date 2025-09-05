@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
+import { DemoProvider } from "@/contexts/DemoContext";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
@@ -14,6 +15,7 @@ import EcoMissions from "./pages/EcoMissions";
 import EcoShop from "./pages/EcoShop";
 import Forum from "./pages/Forum";
 import ImpactTracker from "./pages/ImpactTracker";
+import Achievements from "./pages/Achievements";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,7 @@ const AppContent = () => {
         <Route path="/eco-shop" element={<EcoShop />} />
         <Route path="/forum" element={<Forum />} />
         <Route path="/impact-tracker" element={<ImpactTracker />} />
+        <Route path="/achievements" element={<Achievements />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
@@ -46,7 +49,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppContent />
+        <DemoProvider>
+          <AppContent />
+        </DemoProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

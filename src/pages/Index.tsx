@@ -1,7 +1,9 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { 
   BookOpen, 
   Trophy, 
@@ -14,11 +16,18 @@ import {
   Users,
   Target,
   Star,
-  Zap
+  Zap,
+  Coins,
+  Crown,
+  Shield
 } from "lucide-react";
 import ecoHeroImage from "@/assets/eco-hero.jpg";
+import { useDemo } from "@/contexts/DemoContext";
+import { mockQuizzes } from "@/data/mockData";
 
 const Index = () => {
+  const { currentUser, isDemoMode } = useDemo();
+
   const features = [
     {
       icon: BookOpen,
@@ -46,15 +55,46 @@ const Index = () => {
     }
   ];
 
-  const stats = [
+  const stats = isDemoMode ? [
+    { icon: Users, value: "1,247", label: "Active Students" },
+    { icon: Target, value: `${mockQuizzes.filter(q => q.completed).length}/${mockQuizzes.length}`, label: "Quizzes Completed" },
+    { icon: Star, value: "98%", label: "Engagement Rate" },
+    { icon: Zap, value: `${currentUser.badges.length}+`, label: "Badges Earned" }
+  ] : [
     { icon: Users, value: "1,000+", label: "Active Students" },
     { icon: Target, value: "500+", label: "Quizzes Completed" },
     { icon: Star, value: "95%", label: "Engagement Rate" },
     { icon: Zap, value: "250+", label: "Badges Earned" }
   ];
 
+  const getUserIcon = (role: string) => {
+    switch (role) {
+      case 'student': return Users;
+      case 'teacher': return GraduationCap;
+      case 'admin': return Shield;
+      default: return Users;
+    }
+  };
+
   return (
     <div className="min-h-screen">
+      {/* Demo Welcome Banner */}
+      {isDemoMode && (
+        <div className="bg-gradient-to-r from-primary to-primary-glow text-white p-4 text-center">
+          <div className="container mx-auto flex items-center justify-center gap-4">
+            {React.createElement(getUserIcon(currentUser.role), { className: "h-6 w-6" })}
+            <span className="font-semibold">
+              Welcome {currentUser.name}! You're viewing EcoQuest as a {currentUser.role}.
+            </span>
+            {currentUser.role !== 'student' && (
+              <Badge className="bg-white/20 text-white hover:bg-white/30">
+                Level {currentUser.level} • {currentUser.coins} <Coins className="h-4 w-4 ml-1" />
+              </Badge>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="container mx-auto">
@@ -79,6 +119,36 @@ const Index = () => {
                   achievements, and collaborative learning experiences.
                 </p>
               </div>
+
+              {/* User Progress Bar (Demo Mode) */}
+              {isDemoMode && (
+                <Card className="card-eco p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
+                        <Crown className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg">Level {currentUser.level}</h3>
+                        <p className="text-sm text-muted-foreground">{currentUser.xp} / {currentUser.xp + currentUser.xpToNextLevel} XP</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center gap-2 text-primary font-semibold">
+                        <Coins className="h-5 w-5" />
+                        {currentUser.coins} Eco-Coins
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {currentUser.streak} day streak 🔥
+                      </div>
+                    </div>
+                  </div>
+                  <Progress 
+                    value={(currentUser.xp / (currentUser.xp + currentUser.xpToNextLevel)) * 100} 
+                    className="h-2" 
+                  />
+                </Card>
+              )}
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/quiz">
