@@ -1,73 +1,148 @@
-# Welcome to your Lovable project
+# 🌱 EcoQuest - Environmental Education Platform
 
-## Project info
+A gamified learning management system focused on environmental education, built with React, TypeScript, and Tailwind CSS.
 
-**URL**: https://lovable.dev/projects/57930c3f-3437-415c-9ff7-95d3f43a1ee7
+## ✨ Features
 
-## How can I edit this code?
+- **Gamified Learning**: Interactive quizzes, achievements, and progress tracking
+- **Role-Based Access**: Student, Teacher, and Admin dashboards
+- **Demo Mode**: Full demo experience with user impersonation
+- **Eco-Missions**: Real-world environmental challenges
+- **Eco-Shop**: Virtual rewards and customization items
+- **Impact Tracking**: Global environmental impact visualization
+- **Community Forum**: Discussion and collaboration
+- **Achievements Gallery**: Badge collection and progress celebration
 
-There are several ways of editing your application.
+## 🚀 Quick Start
 
-**Use Lovable**
+### Demo Mode Instructions
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/57930c3f-3437-415c-9ff7-95d3f43a1ee7) and start prompting.
+1. **Enable Demo Mode**: Toggle the "Demo Mode" switch in the header
+2. **Impersonate Users**: Use the dropdown to switch between:
+   - **Student** (Alex Chen): Level 12, 7-day streak, multiple badges
+   - **Teacher** (Ms. Rodriguez): Level 25, educator privileges  
+   - **Admin** (Dr. Green): Level 50, full platform access
 
-Changes made via Lovable will be committed automatically to this repo.
+3. **Presentation Mode**: Toggle to hide admin controls and show guided demo hints
 
-**Use your preferred IDE**
+### User Impersonation Guide
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+#### As Student:
+- View personalized dashboard with XP progress and streak
+- Take quizzes and earn badges
+- Browse and participate in eco-missions
+- Shop for avatar customizations and power-ups
+- Track personal environmental impact
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+#### As Teacher:
+- Access teacher dashboard with class management
+- Monitor student progress and engagement
+- Create and manage missions
+- View class leaderboards and analytics
 
-Follow these steps:
+#### As Admin:
+- Full platform administration access
+- User management and moderation
+- System analytics and reporting
+- Platform configuration
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🛠️ Development
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+\`\`\`bash
+npm install
 npm run dev
-```
+\`\`\`
 
-**Edit a file directly in GitHub**
+### Key Files
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **Demo Context**: \`src/contexts/DemoContext.tsx\` - Manages demo mode and user impersonation
+- **Mock Data**: \`src/data/mockData.ts\` - All demo data and user profiles
+- **Demo Data JSON**: \`public/demo-data.json\` - Exportable demo dataset
 
-**Use GitHub Codespaces**
+### Mock Data Structure
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The demo includes comprehensive mock data:
+- **Users**: 3 complete user profiles (student, teacher, admin)
+- **Missions**: 3 eco-missions with different statuses and submissions
+- **Shop Items**: 8 diverse shop items across categories
+- **Badges**: 12 achievement badges with rarity levels
+- **Impact Data**: Global environmental impact statistics
+- **Quizzes**: Sample quiz data with completion tracking
 
-## What technologies are used for this project?
+## 🔧 Backend Integration
 
-This project is built with:
+For production deployment, replace mock data with API calls:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. **API Endpoints**: See \`/integration\` page for complete documentation
+2. **Data Binding**: Replace \`{{placeholder}}\` variables with API responses
+3. **Authentication**: Implement JWT token management
+4. **Persistence**: Replace localStorage with database storage
 
-## How can I deploy this project?
+Key integration points:
+- \`GET /api/user/:id\` → User profile data
+- \`GET /api/missions\` → Missions list
+- \`POST /api/missions/:id/submit\` → Mission submissions
+- \`GET /api/shop\` → Shop items
+- \`POST /api/shop/buy\` → Purchase transactions
 
-Simply open [Lovable](https://lovable.dev/projects/57930c3f-3437-415c-9ff7-95d3f43a1ee7) and click on Share -> Publish.
+## 📱 Responsive Design
 
-## Can I connect a custom domain to my Lovable project?
+- **Desktop**: Full navigation and feature access
+- **Mobile**: Collapsible navigation with slide-over menu
+- **Tablet**: Optimized layouts for medium screens
 
-Yes, you can!
+## 🎨 Customization
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Themes
+- Light, Dark, and Auto themes supported
+- User-selectable theme preferences
+- Consistent design system with CSS custom properties
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Avatars & Assets
+- Default avatar gallery (10 sample avatars)
+- Badge icon collection (12 themed badges)
+- Customizable user profiles with bio and display names
+
+## 📊 Analytics & Tracking
+
+The platform tracks various metrics in demo mode:
+- User engagement and streak tracking
+- Quiz completion rates and scores
+- Mission participation and success rates
+- Badge acquisition and progression
+- Environmental impact calculations
+
+## 🌍 Environmental Focus
+
+EcoQuest promotes environmental awareness through:
+- Climate change education
+- Recycling and sustainability challenges
+- Biodiversity conservation missions
+- Energy efficiency tracking
+- Water conservation awareness
+- Real-world impact visualization
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test with demo mode
+5. Submit a pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 🆘 Support
+
+- Check the \`/integration\` page for API documentation
+- Review mock data structures in \`src/data/mockData.ts\`
+- Test all features using demo mode user impersonation
+- Ensure responsive design across all device sizes
+
+---
+
+Built with 💚 for our planet's future through education and engagement.
