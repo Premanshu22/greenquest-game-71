@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { QuizManagement } from "@/components/quiz/QuizManagement";
+import { useQuizStorage } from "@/hooks/useQuizStorage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -25,6 +27,7 @@ import {
 } from "lucide-react";
 
 const TeacherDashboard = () => {
+  const { quizzes, courses } = useQuizStorage();
   const [newQuizTitle, setNewQuizTitle] = useState("");
   const [newQuizDescription, setNewQuizDescription] = useState("");
 
@@ -259,62 +262,7 @@ const TeacherDashboard = () => {
 
           {/* Quizzes Tab */}
           <TabsContent value="quizzes" className="space-y-6">
-            <Card className="card-eco animate-fade-in">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-primary" />
-                    Quiz Management
-                  </CardTitle>
-                  <Button className="btn-eco-glow">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create New Quiz
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {recentQuizzes.map((quiz, index) => (
-                    <Card key={index} className="card-interactive animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-4">
-                          <h3 className="font-semibold text-foreground">{quiz.title}</h3>
-                          <Badge className={quiz.status === 'active' ? 'badge-eco' : 'bg-muted text-muted-foreground'}>
-                            {quiz.status}
-                          </Badge>
-                        </div>
-                        
-                        <div className="grid grid-cols-3 gap-4 text-center mb-4">
-                          <div>
-                            <div className="text-lg font-bold text-primary">{quiz.students}</div>
-                            <div className="text-xs text-muted-foreground">Students</div>
-                          </div>
-                          <div>
-                            <div className="text-lg font-bold text-primary">{quiz.avgScore}%</div>
-                            <div className="text-xs text-muted-foreground">Avg Score</div>
-                          </div>
-                          <div>
-                            <div className="text-lg font-bold text-primary">{quiz.created}</div>
-                            <div className="text-xs text-muted-foreground">Created</div>
-                          </div>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" className="flex-1 text-xs">
-                            <BarChart3 className="h-3 w-3 mr-1" />
-                            Analytics
-                          </Button>
-                          <Button variant="outline" size="sm" className="flex-1 text-xs">
-                            <Settings className="h-3 w-3 mr-1" />
-                            Edit
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <QuizManagement quizzes={quizzes} courses={courses} />
           </TabsContent>
 
           {/* Create Tab */}
