@@ -19,7 +19,10 @@ import {
   Zap,
   Coins,
   Crown,
-  Shield
+  Shield,
+  TrendingUp,
+  MessageCircle,
+  Settings
 } from "lucide-react";
 import ecoHeroImage from "@/assets/eco-hero.jpg";
 import { useDemo } from "@/contexts/DemoContext";
@@ -228,6 +231,100 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Extra Features Cards */}
+      <section className="py-20 px-4 bg-gradient-to-b from-accent/10 to-transparent">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Explore <span className="text-primary">Extra Features</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Discover additional tools and features to enhance your environmental learning journey.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <Link to="/eco-missions">
+              <Card className="card-interactive group hover:scale-105 transition-all duration-300">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Target className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">Eco-Missions</h3>
+                  <p className="text-muted-foreground mb-4">Complete real-world environmental challenges and earn rewards for making a difference.</p>
+                  <Button className="w-full">Open Missions</Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/eco-shop">
+              <Card className="card-interactive group hover:scale-105 transition-all duration-300">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Coins className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">Eco-Shop</h3>
+                  <p className="text-muted-foreground mb-4">Spend your earned eco-coins on avatars, themes, and exclusive rewards.</p>
+                  <Button className="w-full">Visit Shop</Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/impact-tracker">
+              <Card className="card-interactive group hover:scale-105 transition-all duration-300">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <TrendingUp className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">Impact Tracker</h3>
+                  <p className="text-muted-foreground mb-4">Monitor your environmental impact and see how your actions contribute to global change.</p>
+                  <Button className="w-full">View Impact</Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/achievements">
+              <Card className="card-interactive group hover:scale-105 transition-all duration-300">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Award className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">Achievements Gallery</h3>
+                  <p className="text-muted-foreground mb-4">Browse your collection of earned badges and achievements with detailed descriptions.</p>
+                  <Button className="w-full">See Achievements</Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/forum">
+              <Card className="card-interactive group hover:scale-105 transition-all duration-300">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <MessageCircle className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">Community Forum</h3>
+                  <p className="text-muted-foreground mb-4">Connect with other eco-warriors, share ideas, and collaborate on environmental projects.</p>
+                  <Button className="w-full">Join Forum</Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/integration">
+              <Card className="card-interactive group hover:scale-105 transition-all duration-300">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Settings className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">Integration Docs</h3>
+                  <p className="text-muted-foreground mb-4">Developer documentation for integrating EcoQuest with your learning management system.</p>
+                  <Button className="w-full">View Docs</Button>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>

@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Home, User, Trophy, BookOpen, GraduationCap, Leaf, Shield, MoreVertical, ChevronDown, Target, MessageSquare, Award, Eye, EyeOff, Settings, Presentation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -13,32 +14,63 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDemo } from "@/contexts/DemoContext";
 import { mockUsers } from "@/data/mockData";
+import { useToast } from "@/hooks/use-toast";
 
 export const Navigation = () => {
+  const { toast } = useToast();
   const { 
     isDemoMode, 
     setIsDemoMode, 
     isPresentationMode, 
     setIsPresentationMode, 
     currentUser, 
+    currentRole,
+    setCurrentRole,
     impersonateUser,
     demoStep,
     setDemoStep,
     totalDemoSteps
   } = useDemo();
 
-  const navItems = [
-    { name: "Home", path: "/", icon: Home },
-    { name: "Profile", path: "/profile", icon: User },
-    { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
-    { name: "Quiz", path: "/quiz", icon: BookOpen },
-    { name: "Teacher", path: "/teacher", icon: GraduationCap, roles: ['teacher', 'admin'] },
-    { name: "Admin", path: "/admin", icon: Shield, roles: ['admin'] }
-  ];
+  // Role-based navigation items
+  const getRoleBasedNavItems = () => {
+    const role = isDemoMode ? currentRole : currentUser.role;
+    
+    const baseItems = [
+      { name: "Home", path: "/", icon: Home },
+      { name: "Profile", path: "/profile", icon: User },
+    ];
 
-  const filteredNavItems = navItems.filter(item => 
-    !item.roles || item.roles.includes(currentUser.role)
-  );
+    switch (role) {
+      case 'admin':
+        return [
+          ...baseItems,
+          { name: "Admin Dashboard", path: "/admin", icon: Shield },
+        ];
+      case 'teacher':
+        return [
+          ...baseItems,
+          { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
+          { name: "Teacher Dashboard", path: "/teacher", icon: BookOpen },
+        ];
+      case 'student':
+        return [
+          ...baseItems,
+          { name: "Quiz", path: "/quiz", icon: BookOpen },
+          { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
+          { name: "Student Dashboard", path: "/student-dashboard", icon: GraduationCap },
+        ];
+      case 'guest':
+      default:
+        return [
+          ...baseItems,
+          { name: "Quiz", path: "/quiz", icon: BookOpen },
+          { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
+        ];
+    }
+  };
+
+  const filteredNavItems = getRoleBasedNavItems();
 
   const getRoleIcon = (role: string) => {
     switch (role) {
@@ -117,16 +149,46 @@ export const Navigation = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="flex items-center gap-2">
-                    {React.createElement(getRoleIcon(currentUser.role), { 
-                      className: `h-4 w-4 ${getRoleColor(currentUser.role)}` 
+                    {React.createElement(getRoleIcon(currentRole), { 
+                      className: `h-4 w-4 ${getRoleColor(currentRole)}` 
                     })}
-                    {currentUser.name}
+                    {currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}
                     <ChevronDown className="h-3 w-3" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel>Impersonate User</DropdownMenuLabel>
+                  <DropdownMenuLabel>Impersonate Role</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {[
+                    { role: 'guest', name: 'Guest User', icon: User },
+                    { role: 'student', name: 'Student User', icon: User },
+                    { role: 'teacher', name: 'Teacher User', icon: GraduationCap },
+                    { role: 'admin', name: 'Admin User', icon: Shield }
+                  ].map((roleOption) => (
+                    <DropdownMenuItem 
+                      key={roleOption.role} 
+                      onClick={() => {
+                        setCurrentRole(roleOption.role as any);
+                        toast({
+                          title: `Impersonating: ${roleOption.name}`,
+                          description: "Navigation updated for role-based access.",
+                        });
+                      }}
+                      className={currentRole === roleOption.role ? "bg-accent" : ""}
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        {React.createElement(roleOption.icon, { 
+                          className: `h-4 w-4 ${getRoleColor(roleOption.role)}` 
+                        })}
+                        <div className="flex flex-col">
+                          <span className="font-medium">{roleOption.name}</span>
+                          <span className="text-xs text-muted-foreground capitalize">{roleOption.role}</span>
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Impersonate User</DropdownMenuLabel>
                   {mockUsers.map((user) => (
                     <DropdownMenuItem 
                       key={user.id} 
@@ -202,12 +264,22 @@ export const Navigation = () => {
                     Eco-Shop
                   </NavLink>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <NavLink to="/forum" className="flex items-center gap-2 w-full">
-                    <MessageSquare className="h-4 w-4 text-blue-600" />
-                    Community Forum
-                  </NavLink>
-                </DropdownMenuItem>
+                {(currentRole !== 'teacher' || !isDemoMode) && (
+                  <DropdownMenuItem asChild>
+                    <NavLink to="/forum" className="flex items-center gap-2 w-full">
+                      <MessageSquare className="h-4 w-4 text-blue-600" />
+                      Community Forum
+                    </NavLink>
+                  </DropdownMenuItem>
+                )}
+                {currentRole === 'admin' && isDemoMode && (
+                  <DropdownMenuItem asChild>
+                    <NavLink to="/forum" className="flex items-center gap-2 w-full">
+                      <Settings className="h-4 w-4 text-purple-600" />
+                      Forum Settings
+                    </NavLink>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <NavLink to="/impact-tracker" className="flex items-center gap-2 w-full">
                     <Trophy className="h-4 w-4 text-emerald-600" />
@@ -218,6 +290,12 @@ export const Navigation = () => {
                   <NavLink to="/achievements" className="flex items-center gap-2 w-full">
                     <Award className="h-4 w-4 text-yellow-600" />
                     Achievements Gallery
+                  </NavLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink to="/integration" className="flex items-center gap-2 w-full">
+                    <Settings className="h-4 w-4 text-gray-600" />
+                    Integration Docs
                   </NavLink>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -297,12 +375,14 @@ export const Navigation = () => {
                     Eco-Shop
                   </NavLink>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <NavLink to="/forum" className="flex items-center gap-2 w-full">
-                    <MessageSquare className="h-4 w-4 text-blue-600" />
-                    Community Forum
-                  </NavLink>
-                </DropdownMenuItem>
+                {(currentRole !== 'teacher' || !isDemoMode) && (
+                  <DropdownMenuItem asChild>
+                    <NavLink to="/forum" className="flex items-center gap-2 w-full">
+                      <MessageSquare className="h-4 w-4 text-blue-600" />
+                      Community Forum
+                    </NavLink>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <NavLink to="/impact-tracker" className="flex items-center gap-2 w-full">
                     <Trophy className="h-4 w-4 text-emerald-600" />
@@ -313,6 +393,12 @@ export const Navigation = () => {
                   <NavLink to="/achievements" className="flex items-center gap-2 w-full">
                     <Award className="h-4 w-4 text-yellow-600" />
                     Achievements Gallery
+                  </NavLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <NavLink to="/integration" className="flex items-center gap-2 w-full">
+                    <Settings className="h-4 w-4 text-gray-600" />
+                    Integration Docs
                   </NavLink>
                 </DropdownMenuItem>
               </DropdownMenuContent>

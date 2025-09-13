@@ -7,6 +7,8 @@ interface DemoContextType {
   isPresentationMode: boolean;
   setIsPresentationMode: (enabled: boolean) => void;
   currentUser: User;
+  currentRole: 'guest' | 'student' | 'teacher' | 'admin';
+  setCurrentRole: (role: 'guest' | 'student' | 'teacher' | 'admin') => void;
   impersonateUser: (userId: string) => void;
   demoStep: number;
   setDemoStep: (step: number) => void;
@@ -23,6 +25,7 @@ export const DemoProvider = ({ children }: DemoProviderProps) => {
   const [isDemoMode, setIsDemoMode] = useState(true);
   const [isPresentationMode, setIsPresentationMode] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>(getCurrentUser());
+  const [currentRole, setCurrentRole] = useState<'guest' | 'student' | 'teacher' | 'admin'>('guest');
   const [demoStep, setDemoStep] = useState(0);
   const totalDemoSteps = 8;
 
@@ -39,6 +42,8 @@ export const DemoProvider = ({ children }: DemoProviderProps) => {
     isPresentationMode,
     setIsPresentationMode,
     currentUser,
+    currentRole,
+    setCurrentRole,
     impersonateUser,
     demoStep,
     setDemoStep,

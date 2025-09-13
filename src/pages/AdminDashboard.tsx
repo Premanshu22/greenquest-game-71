@@ -1,310 +1,587 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, 
   GraduationCap, 
   BookOpen, 
   Shield, 
-  Plus, 
-  Search,
-  Filter,
-  MoreVertical,
-  Edit,
-  Trash2,
-  UserPlus
-} from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
+  Award, 
+  Search, 
+  Edit, 
+  Trash2, 
+  UserPlus, 
+  RefreshCw,
+  TrendingUp,
+  MessageCircle,
+  Flag,
+  Eye,
+  Settings
+} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { RouteGuard } from '@/components/RouteGuard';
 
 interface User {
   id: string;
   email: string;
   name: string;
-  role: string;
-  created_at: string;
+  role: 'student' | 'teacher' | 'admin';
+  joinedDate: string;
+  status: 'active' | 'disabled';
+}
+
+interface ForumThread {
+  id: string;
+  title: string;
+  author: string;
+  replies: number;
+  reported: boolean;
 }
 
 const AdminDashboard = () => {
+  const { toast } = useToast();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    totalStudents: 0,
-    totalTeachers: 0,
-    totalQuizzes: 0,
-    totalUsers: 0
-  });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [forumThreads, setForumThreads] = useState<ForumThread[]>([]);
 
+  // Mock data
+  const mockUsers: User[] = [
+    { id: '1', email: 'alice@school.edu', name: 'Alice Cooper', role: 'student', joinedDate: '2024-01-15', status: 'active' },
+    { id: '2', email: 'bob@school.edu', name: 'Bob Wilson', role: 'teacher', joinedDate: '2024-01-10', status: 'active' },
+    { id: '3', email: 'charlie@school.edu', name: 'Charlie Brown', role: 'student', joinedDate: '2024-02-01', status: 'disabled' },
+    { id: '4', email: 'diana@school.edu', name: 'Diana Prince', role: 'teacher', joinedDate: '2024-01-20', status: 'active' },
+    { id: '5', email: 'eve@school.edu', name: 'Eve Adams', role: 'admin', joinedDate: '2024-01-05', status: 'active' },
+  ];
+
+  const mockForumThreads: ForumThread[] = [
+    { id: '1', title: 'Best practices for water conservation', author: 'Alice Cooper', replies: 12, reported: false },
+    { id: '2', title: 'Solar panel efficiency discussion', author: 'Bob Wilson', replies: 8, reported: true },
+    { id: '3', title: 'Community garden project ideas', author: 'Diana Prince', replies: 15, reported: false },
+  ];
+
+  // Load data from localStorage or use mock data
   useEffect(() => {
-    fetchUsers();
-    fetchStats();
+    const savedData = localStorage.getItem('ecoquest_demo');
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        setUsers(parsed.users || mockUsers);
+        setForumThreads(parsed.forumThreads || mockForumThreads);
+      } catch {
+        setUsers(mockUsers);
+        setForumThreads(mockForumThreads);
+      }
+    } else {
+      setUsers(mockUsers);
+      setForumThreads(mockForumThreads);
+    }
+    setIsLoading(false);
   }, []);
 
+  // Save to localStorage
+  const saveToLocalStorage = (updatedUsers: User[], updatedThreads: ForumThread[]) => {
+    const data = {
+      users: updatedUsers,
+      forumThreads: updatedThreads,
+      lastUpdated: new Date().toISOString()
+    };
+    localStorage.setItem('ecoquest_demo', JSON.stringify(data));
+  };
+
+  // Filter users
   useEffect(() => {
-    filterUsers();
-  }, [users, searchTerm, roleFilter]);
+    let filtered = users.filter(user => 
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-  const fetchUsers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch users",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setUsers(data || []);
-    } catch (err) {
-      console.error('Error fetching users:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchStats = async () => {
-    try {
-      const { data: allUsers } = await supabase
-        .from('users')
-        .select('role');
-
-      const { data: quizzes } = await supabase
-        .from('quizzes')
-        .select('id');
-
-      if (allUsers) {
-        const students = allUsers.filter(u => u.role === 'student').length;
-        const teachers = allUsers.filter(u => u.role === 'teacher').length;
-        
-        setStats({
-          totalStudents: students,
-          totalTeachers: teachers,
-          totalQuizzes: quizzes?.length || 0,
-          totalUsers: allUsers.length
-        });
-      }
-    } catch (err) {
-      console.error('Error fetching stats:', err);
-    }
-  };
-
-  const filterUsers = () => {
-    let filtered = users;
-
-    if (searchTerm) {
-      filtered = filtered.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (roleFilter !== "all") {
+    if (roleFilter !== 'all') {
       filtered = filtered.filter(user => user.role === roleFilter);
     }
 
     setFilteredUsers(filtered);
+  }, [users, searchTerm, roleFilter]);
+
+  const handleEditUser = (user: User) => {
+    console.log('PATCH /api/admin/users/' + user.id, user);
+    const updatedUsers = users.map(u => u.id === user.id ? user : u);
+    setUsers(updatedUsers);
+    saveToLocalStorage(updatedUsers, forumThreads);
+    setEditingUser(null);
+    toast({
+      title: 'User Updated',
+      description: `${user.name}'s profile has been updated.`,
+    });
+  };
+
+  const handleDeleteUser = (userId: string) => {
+    console.log('DELETE /api/admin/users/' + userId);
+    const updatedUsers = users.filter(u => u.id !== userId);
+    setUsers(updatedUsers);
+    saveToLocalStorage(updatedUsers, forumThreads);
+    toast({
+      title: 'User Deleted',
+      description: 'User has been removed from the system.',
+      variant: 'destructive',
+    });
+  };
+
+  const handleToggleUserStatus = (userId: string) => {
+    console.log('POST /api/admin/users/toggle-status', { userId });
+    const updatedUsers = users.map(u => 
+      u.id === userId 
+        ? { ...u, status: u.status === 'active' ? 'disabled' : 'active' as 'active' | 'disabled' }
+        : u
+    );
+    setUsers(updatedUsers);
+    saveToLocalStorage(updatedUsers, forumThreads);
+    toast({
+      title: 'Status Updated',
+      description: 'User status has been changed.',
+    });
+  };
+
+  const handleAddDemoTeacher = () => {
+    console.log('POST /api/admin/users', { role: 'teacher' });
+    const newTeacher: User = {
+      id: Date.now().toString(),
+      email: `teacher${Date.now()}@demo.edu`,
+      name: `Demo Teacher ${users.length + 1}`,
+      role: 'teacher',
+      joinedDate: new Date().toISOString().split('T')[0],
+      status: 'active'
+    };
+    const updatedUsers = [...users, newTeacher];
+    setUsers(updatedUsers);
+    saveToLocalStorage(updatedUsers, forumThreads);
+    toast({
+      title: 'Demo Teacher Added',
+      description: 'New teacher account created.',
+    });
+  };
+
+  const handleResetDemoData = () => {
+    setUsers(mockUsers);
+    setForumThreads(mockForumThreads);
+    localStorage.removeItem('ecoquest_demo');
+    toast({
+      title: 'Demo Data Reset',
+      description: 'All demo data has been restored to defaults.',
+    });
+  };
+
+  const handleToggleReport = (threadId: string) => {
+    console.log('POST /api/admin/forum/toggle-report', { threadId });
+    const updatedThreads = forumThreads.map(t => 
+      t.id === threadId ? { ...t, reported: !t.reported } : t
+    );
+    setForumThreads(updatedThreads);
+    saveToLocalStorage(users, updatedThreads);
+  };
+
+  const handleRemoveThread = (threadId: string) => {
+    console.log('DELETE /api/admin/forum/threads/' + threadId);
+    const updatedThreads = forumThreads.filter(t => t.id !== threadId);
+    setForumThreads(updatedThreads);
+    saveToLocalStorage(users, updatedThreads);
+    toast({
+      title: 'Thread Removed',
+      description: 'Forum thread has been removed.',
+      variant: 'destructive',
+    });
   };
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-destructive';
-      case 'teacher': return 'bg-warning';
-      case 'student': return 'bg-primary';
-      default: return 'bg-secondary';
+      case 'admin': return 'destructive';
+      case 'teacher': return 'secondary';
+      case 'student': return 'default';
+      default: return 'outline';
     }
   };
 
-  const statsCards = [
-    {
-      title: "Total Students",
-      value: stats.totalStudents,
-      icon: Users,
-      color: "bg-gradient-to-br from-primary to-primary-glow"
-    },
-    {
-      title: "Total Teachers", 
-      value: stats.totalTeachers,
-      icon: GraduationCap,
-      color: "bg-gradient-to-br from-warning to-yellow-500"
-    },
-    {
-      title: "Total Quizzes",
-      value: stats.totalQuizzes,
-      icon: BookOpen,
-      color: "bg-gradient-to-br from-success to-green-500"
-    },
-    {
-      title: "All Users",
-      value: stats.totalUsers,
-      icon: Shield,
-      color: "bg-gradient-to-br from-purple-500 to-pink-500"
-    }
-  ];
+  const stats = {
+    totalUsers: users.length,
+    totalStudents: users.filter(u => u.role === 'student').length,
+    totalTeachers: users.filter(u => u.role === 'teacher').length,
+    totalQuizzes: 156,
+    totalMissions: 24,
+    totalBadges: 48
+  };
+
+  if (isLoading) {
+    return <div className="container mx-auto p-6">Loading...</div>;
+  }
 
   return (
-    <div className="min-h-screen p-4 md:p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Manage users and monitor platform activity</p>
+    <RouteGuard allowedRoles={['admin']} currentPath="Admin Dashboard">
+      <div className="container mx-auto p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
+            <p className="text-muted-foreground">Manage users, content, and platform settings</p>
+          </div>
+          <Badge variant="outline" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Administrator Access
+          </Badge>
         </div>
-        <Button className="btn-eco-hero">
-          <Plus className="h-4 w-4 mr-2" />
-          Add User
-        </Button>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsCards.map((stat, index) => (
-          <Card key={index} className="card-interactive animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+        {/* Platform Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Users className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm text-muted-foreground">{stat.title}</p>
-                  <p className="text-3xl font-bold text-foreground">{stat.value}</p>
-                </div>
-                <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center shadow-lg`}>
-                  <stat.icon className="h-6 w-6 text-white" />
+                  <p className="text-sm text-muted-foreground">Total Users</p>
+                  <p className="text-xl font-bold">{stats.totalUsers}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
-
-      {/* Main Content */}
-      <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="users" className="space-y-6">
-          {/* Filters */}
+          
           <Card>
-            <CardHeader>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription>
-                View and manage all platform users
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search users by name or email..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Users className="h-5 w-5 text-blue-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Students</p>
+                  <p className="text-xl font-bold">{stats.totalStudents}</p>
                 </div>
-                <Select value={roleFilter} onValueChange={setRoleFilter}>
-                  <SelectTrigger className="w-full md:w-48">
-                    <div className="flex items-center">
-                      <Filter className="h-4 w-4 mr-2" />
-                      <SelectValue />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="student">Students</SelectItem>
-                    <SelectItem value="teacher">Teachers</SelectItem>
-                    <SelectItem value="admin">Admins</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
+            </CardContent>
+          </Card>
 
-              {/* Users List */}
-              <div className="space-y-3">
-                {loading ? (
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">Loading users...</p>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <GraduationCap className="h-5 w-5 text-green-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Teachers</p>
+                  <p className="text-xl font-bold">{stats.totalTeachers}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <BookOpen className="h-5 w-5 text-purple-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Quizzes</p>
+                  <p className="text-xl font-bold">{stats.totalQuizzes}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <TrendingUp className="h-5 w-5 text-orange-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Missions</p>
+                  <p className="text-xl font-bold">{stats.totalMissions}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Award className="h-5 w-5 text-yellow-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Badges</p>
+                  <p className="text-xl font-bold">{stats.totalBadges}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs defaultValue="users" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="forum">Forum Moderation</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="users" className="space-y-4">
+            {/* User Management Controls */}
+            <Card>
+              <CardHeader>
+                <CardTitle>User Management</CardTitle>
+                <CardDescription>Manage user accounts and permissions</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search users..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
                   </div>
-                ) : filteredUsers.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-muted-foreground">No users found</p>
-                  </div>
-                ) : (
-                  filteredUsers.map((user, index) => (
-                    <Card key={user.id} className="animate-slide-up" style={{ animationDelay: `${index * 0.05}s` }}>
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center text-white font-medium">
-                              {user.name.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                              <h3 className="font-medium text-foreground">{user.name}</h3>
-                              <p className="text-sm text-muted-foreground">{user.email}</p>
-                              <p className="text-xs text-muted-foreground">
-                                Joined {new Date(user.created_at).toLocaleDateString()}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Badge className={getRoleBadgeColor(user.role)}>
+                  <Select value={roleFilter} onValueChange={setRoleFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Filter by role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Roles</SelectItem>
+                      <SelectItem value="student">Students</SelectItem>
+                      <SelectItem value="teacher">Teachers</SelectItem>
+                      <SelectItem value="admin">Admins</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* User Table */}
+                <div className="border rounded-lg">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Joined</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredUsers.map((user) => (
+                        <TableRow key={user.id}>
+                          <TableCell className="font-medium">{user.name}</TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>
+                            <Badge variant={getRoleBadgeColor(user.role)}>
                               {user.role}
                             </Badge>
-                            <div className="flex items-center space-x-1">
-                              <Button variant="ghost" size="sm">
-                                <Edit className="h-4 w-4" />
+                          </TableCell>
+                          <TableCell>{user.joinedDate}</TableCell>
+                          <TableCell>
+                            <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>
+                              {user.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => setEditingUser(user)}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>Edit User</DialogTitle>
+                                    <DialogDescription>
+                                      Make changes to user account details.
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  {editingUser && (
+                                    <div className="space-y-4">
+                                      <div>
+                                        <Label htmlFor="name">Name</Label>
+                                        <Input
+                                          id="name"
+                                          value={editingUser.name}
+                                          onChange={(e) => setEditingUser({...editingUser, name: e.target.value})}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="email">Email</Label>
+                                        <Input
+                                          id="email"
+                                          value={editingUser.email}
+                                          onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="role">Role</Label>
+                                        <Select 
+                                          value={editingUser.role} 
+                                          onValueChange={(value: 'student' | 'teacher' | 'admin') => 
+                                            setEditingUser({...editingUser, role: value})
+                                          }
+                                        >
+                                          <SelectTrigger>
+                                            <SelectValue />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="student">Student</SelectItem>
+                                            <SelectItem value="teacher">Teacher</SelectItem>
+                                            <SelectItem value="admin">Admin</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                      <Button 
+                                        onClick={() => handleEditUser(editingUser)}
+                                        className="w-full"
+                                      >
+                                        Save Changes
+                                      </Button>
+                                    </div>
+                                  )}
+                                </DialogContent>
+                              </Dialog>
+                              
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleToggleUserStatus(user.id)}
+                              >
+                                {user.status === 'active' ? 'Disable' : 'Enable'}
                               </Button>
-                              <Button variant="ghost" size="sm">
+                              
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleDeleteUser(user.id)}
+                              >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
 
-        <TabsContent value="analytics">
-          <Card>
-            <CardHeader>
-              <CardTitle>Platform Analytics</CardTitle>
-              <CardDescription>
-                Overview of platform usage and engagement
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12">
-                <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-foreground mb-2">Analytics Coming Soon</h3>
-                <p className="text-muted-foreground">
-                  Detailed analytics and reports will be available here.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-4">
+                  <Button onClick={handleAddDemoTeacher} className="flex items-center gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Add Demo Teacher
+                  </Button>
+                  <Button variant="outline" onClick={() => {
+                    console.log('POST /api/admin/bulk-invite', { role: 'student', count: 10 });
+                    toast({ title: 'Bulk Invite Sent', description: '10 student invites sent (mock).' });
+                  }}>
+                    Bulk Invite Students (Mock)
+                  </Button>
+                  <Button variant="destructive" onClick={handleResetDemoData}>
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Reset Demo Data
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="forum" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Forum Moderation</CardTitle>
+                <CardDescription>Monitor and moderate community discussions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Thread Title</TableHead>
+                      <TableHead>Author</TableHead>
+                      <TableHead>Replies</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {forumThreads.map((thread) => (
+                      <TableRow key={thread.id}>
+                        <TableCell className="font-medium">{thread.title}</TableCell>
+                        <TableCell>{thread.author}</TableCell>
+                        <TableCell>{thread.replies}</TableCell>
+                        <TableCell>
+                          {thread.reported ? (
+                            <Badge variant="destructive">
+                              <Flag className="h-3 w-3 mr-1" />
+                              Reported
+                            </Badge>
+                          ) : (
+                            <Badge variant="default">Normal</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleToggleReport(thread.id)}
+                            >
+                              <Flag className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              variant="destructive" 
+                              size="sm"
+                              onClick={() => handleRemoveThread(thread.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <Card>
+              <CardHeader>
+                <CardTitle>Analytics Dashboard</CardTitle>
+                <CardDescription>Platform usage and engagement metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Alert>
+                  <TrendingUp className="h-4 w-4" />
+                  <AlertDescription>
+                    Coming Soon - Advanced analytics including user engagement, quiz completion rates, 
+                    and platform usage statistics will be available here.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </RouteGuard>
   );
 };
 
