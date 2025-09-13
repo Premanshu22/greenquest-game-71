@@ -167,7 +167,7 @@ const Integration = () => {
           <h1 className="text-3xl font-bold">Integration Documentation</h1>
         </div>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Complete guide for connecting EcoQuest frontend to your backend API. 
+          Complete guide for connecting GreenEdventure frontend to your backend API. 
           This documentation covers data structures, API endpoints, and frontend binding points.
         </p>
       </div>

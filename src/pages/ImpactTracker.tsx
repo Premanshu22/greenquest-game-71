@@ -73,7 +73,7 @@ const ImpactTracker = () => {
             </h1>
           </div>
           <p className="text-xl text-muted-foreground">
-            See the real-time environmental impact of our global EcoQuest community
+            See the real-time environmental impact of our global GreenEdventure community
           </p>
           <Badge variant="secondary" className="mt-2 bg-emerald-100 text-emerald-700">
             <TrendingUp className="h-4 w-4 mr-1" />

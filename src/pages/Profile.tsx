@@ -48,7 +48,7 @@ const Profile = () => {
         {/* Header */}
         <div className="text-center animate-fade-in">
           <h1 className="text-4xl font-bold mb-4">
-            My <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">EcoQuest</span> Profile
+            My <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">GreenEdventure</span> Profile
           </h1>
           <p className="text-xl text-muted-foreground">Track your environmental learning journey</p>
         </div>

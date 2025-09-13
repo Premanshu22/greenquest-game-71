@@ -97,7 +97,7 @@ const Leaderboard = () => {
     {
       rank: 7,
       name: "Alex Green",
-      school: "EcoQuest Demo",
+      school: "GreenEdventure Demo",
       points: 2850,
       badges: 8,
       streak: 7,
@@ -159,7 +159,7 @@ const Leaderboard = () => {
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            <span className="text-primary">EcoQuest</span> Leaderboard
+            <span className="text-primary">GreenEdventure</span> Leaderboard
           </h1>
           <p className="text-muted-foreground">See how you stack up against other eco-learners!</p>
         </div>

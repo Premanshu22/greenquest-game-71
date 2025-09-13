@@ -103,7 +103,7 @@ export const Navigation = () => {
               </Button>
             </div>
             <p className="text-sm text-muted-foreground mb-3">
-              {demoStep === 0 && "Welcome! This is the EcoQuest demo. Click Demo Mode toggle to explore different features."}
+              {demoStep === 0 && "Welcome! This is the GreenEdventure demo. Click Demo Mode toggle to explore different features."}
               {demoStep === 1 && "Try switching between Student, Teacher, and Admin views using the Impersonate dropdown."}
               {demoStep === 2 && "Navigate to different pages to see role-specific content and features."}
               {demoStep === 3 && "Check out the Extra Features dropdown for Eco-Missions, Shop, Forum, and more!"}
@@ -130,7 +130,7 @@ export const Navigation = () => {
           {/* Logo */}
           <NavLink to="/" className="flex items-center gap-2 font-bold text-xl text-primary hover:scale-105 transition-transform">
             <Leaf className="h-8 w-8 text-primary animate-pulse" />
-            EcoQuest
+            GreenEdventure
           </NavLink>
 
           {/* Demo Controls */}

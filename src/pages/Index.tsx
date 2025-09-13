@@ -87,7 +87,7 @@ const Index = () => {
           <div className="container mx-auto flex items-center justify-center gap-4">
             {React.createElement(getUserIcon(currentUser.role), { className: "h-6 w-6" })}
             <span className="font-semibold">
-              Welcome {currentUser.name}! You're viewing EcoQuest as a {currentUser.role}.
+              Welcome {currentUser.name}! You're viewing GreenEdventure as a {currentUser.role}.
             </span>
             {currentUser.role !== 'student' && (
               <Badge className="bg-white/20 text-white hover:bg-white/30">
@@ -110,12 +110,12 @@ const Index = () => {
                 </Badge>
                 <h1 className="text-4xl md:text-6xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-primary via-primary-glow to-success bg-clip-text text-transparent">
-                    EcoQuest
+                    GreenEdventure
                   </span>
                   <br />
-                  <span className="text-foreground">Learn. Play.</span>
+                  <span className="text-foreground">Education That</span>
                   <br />
-                  <span className="text-foreground">Save the Planet.</span>
+                  <span className="text-foreground">Grows with Nature.</span>
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-xl leading-relaxed">
                   Transform environmental education through gamification. Engage students with interactive quizzes, 
@@ -186,7 +186,7 @@ const Index = () => {
               <div className="relative overflow-hidden rounded-3xl shadow-2xl">
                 <img 
                   src={ecoHeroImage} 
-                  alt="EcoQuest - Environmental Education Platform" 
+                  alt="GreenEdventure - Environmental Education Platform" 
                   className="w-full h-auto object-cover transition-transform duration-700 hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"></div>
@@ -207,12 +207,96 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-transparent to-accent/20">
+      {/* Why GreenEdventure Section */}
+      <section className="py-20 px-4 bg-gradient-to-b from-transparent to-accent/10">
         <div className="container mx-auto">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Why Choose <span className="text-primary">EcoQuest</span>?
+              Why <span className="text-primary">GreenEdventure</span>?
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Education that grows with nature, empowering students and teachers to make a real difference.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <Card className="card-interactive group animate-slide-up">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <Zap className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-foreground">Gamified Learning</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">→ Higher Engagement</p>
+                <p className="text-sm text-muted-foreground">Interactive quizzes and challenges that make learning fun and memorable.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="card-interactive group animate-slide-up" style={{ animationDelay: "0.1s" }}>
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-success to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <TreePine className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-foreground">Real-world Eco Impact</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">→ Measurable Change</p>
+                <p className="text-sm text-muted-foreground">Track your environmental contributions and see the collective impact of your actions.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="card-interactive group animate-slide-up" style={{ animationDelay: "0.2s" }}>
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <Shield className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-foreground">Role-based Dashboards</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">→ Teachers & Admins Empowered</p>
+                <p className="text-sm text-muted-foreground">Comprehensive tools for educators to track progress and manage learning experiences.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission of the Week */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="max-w-4xl mx-auto">
+            <Card className="card-eco border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-success/5 hover:scale-105 transition-all duration-300 animate-scale-in">
+              <CardContent className="p-8 md:p-12 text-center">
+                <Badge className="badge-eco mb-6">
+                  <Target className="h-4 w-4" />
+                  Mission of the Week
+                </Badge>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
+                  This Week's Challenge: Plant a Tree 🌱
+                </h2>
+                <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+                  Join thousands of students worldwide in our weekly environmental mission. 
+                  Every tree planted brings us closer to a sustainable future!
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/eco-missions">
+                    <Button className="btn-eco-hero">
+                      <Target className="h-5 w-5 mr-2" />
+                      Join Mission →
+                    </Button>
+                  </Link>
+                  <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                    <Users className="h-5 w-5 mr-2" />
+                    See Previous Missions
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4 bg-gradient-to-b from-accent/10 to-accent/20">
+        <div className="container mx-auto">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Why Choose <span className="text-primary">GreenEdventure</span>?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Discover how our gamified approach makes environmental education engaging, effective, and fun for students of all ages.
@@ -231,6 +315,58 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 px-4 bg-gradient-to-b from-accent/20 to-accent/10">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              What Our Community Says
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Hear from students and teachers who are making a difference with GreenEdventure.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <Card className="card-interactive group">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center flex-shrink-0">
+                    <Users className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-lg font-medium text-foreground mb-2">"GreenEdventure made learning fun and meaningful!"</p>
+                    <p className="text-muted-foreground text-sm">— Sarah M., Student</p>
+                  </div>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
+                  "I never thought environmental science could be so engaging. The quizzes and missions 
+                  make me excited to learn more about protecting our planet."
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="card-interactive group">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-success to-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <GraduationCap className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-lg font-medium text-foreground mb-2">"Finally, a tool to link teaching with real-world action."</p>
+                    <p className="text-muted-foreground text-sm">— Dr. Johnson, Teacher</p>
+                  </div>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
+                  "The teacher dashboard gives me incredible insights into student progress, and my students 
+                  are more engaged than ever with environmental topics."
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -320,7 +456,7 @@ const Index = () => {
                     <Settings className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-foreground">Integration Docs</h3>
-                  <p className="text-muted-foreground mb-4">Developer documentation for integrating EcoQuest with your learning management system.</p>
+                  <p className="text-muted-foreground mb-4">Developer documentation for integrating GreenEdventure with your learning management system.</p>
                   <Button className="w-full">View Docs</Button>
                 </CardContent>
               </Card>
@@ -330,29 +466,27 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <div className="max-w-3xl mx-auto bg-gradient-to-br from-primary/10 to-success/10 rounded-3xl p-12 border border-primary/20 animate-scale-in">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
-              Ready to Start Your <span className="text-primary">Eco Journey</span>?
+      <section className="py-20 px-4 bg-gradient-to-br from-primary to-success relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <div className="w-full h-full bg-white/10 bg-repeat" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}></div>
+        </div>
+        <div className="container mx-auto text-center relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+              Ready to Learn, Play, and Save the Planet?
             </h2>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              Join thousands of students already learning and making a difference. 
-              Start your environmental education adventure today!
+            <p className="text-xl md:text-2xl text-white/90 mb-12 leading-relaxed max-w-3xl mx-auto">
+              Join thousands of students and educators worldwide in the mission to create a sustainable future through education.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/profile">
-                <Button className="btn-eco-hero">
-                  <Award className="h-5 w-5 mr-2" />
-                  View My Profile
-                </Button>
-              </Link>
-              <Link to="/teacher">
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-                  <GraduationCap className="h-5 w-5 mr-2" />
-                  Teacher Dashboard
-                </Button>
-              </Link>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-4 h-auto font-semibold shadow-xl hover:scale-105 transition-all duration-300">
+                <Award className="h-6 w-6 mr-3" />
+                Get Started in Demo Mode
+              </Button>
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-4 h-auto font-semibold hover:scale-105 transition-all duration-300">
+                <BookOpen className="h-6 w-6 mr-3" />
+                Explore Features
+              </Button>
             </div>
           </div>
         </div>
@@ -365,7 +499,7 @@ const Index = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-2 font-bold text-xl text-primary">
                 <Leaf className="h-6 w-6" />
-                EcoQuest
+                GreenEdventure
               </div>
               <p className="text-muted-foreground">
                 Empowering the next generation through gamified environmental education.
@@ -402,7 +536,7 @@ const Index = () => {
           
           <div className="border-t border-border/50 mt-8 pt-8 text-center">
             <p className="text-muted-foreground">
-              © 2024 EcoQuest. All rights reserved. Built with 💚 for our planet.
+              © 2024 GreenEdventure. All rights reserved. Built with 💚 for our planet.
             </p>
           </div>
         </div>
